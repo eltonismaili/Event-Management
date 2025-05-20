@@ -14,10 +14,8 @@ import lombok.NoArgsConstructor;
 public class RegistrationDto {
 
     private Long id;
-    @NotBlank
     @NotNull
     private UserDto userId;
-    @NotBlank
     @NotNull
     private EventDto eventId;
 }

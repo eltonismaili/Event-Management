@@ -15,9 +15,9 @@ public class Registration {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User userId;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    private Event eventId;
 }

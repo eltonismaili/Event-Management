@@ -1,5 +1,8 @@
 package com.example.eventmanagment.dto.event;
 
+import com.example.eventmanagment.dto.category.CategoryDto;
+import com.example.eventmanagment.dto.user.UserDto;
+import com.example.eventmanagment.dto.venue.VenueDto;
 import com.example.eventmanagment.entities.enums.EventType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +28,7 @@ public class CreateEventRequest {
     private String description;
 
     @NotNull
-    private Long userId;
+    private UserDto userId;
 
     @NotNull
     private LocalDateTime startTime;
@@ -40,10 +43,10 @@ public class CreateEventRequest {
     private EventType eventType;
 
     @NotNull
-    private Long categoryId;
+    private CategoryDto categoryId;
 
     @NotNull
-    private Long venueId;
+    private VenueDto venueId;
 
     @Size(min = 2, max = 50, message = "Created by must be between 2 and 50 characters")
     @NotBlank

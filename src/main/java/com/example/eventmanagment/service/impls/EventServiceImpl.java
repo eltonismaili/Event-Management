@@ -47,13 +47,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto create(CreateEventRequest request) {
-        Category category = categoryRepository.findById(request.getCategoryId())
+        Category category = categoryRepository.findById(request.getCategoryId().getId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(request.getUserId().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Venue venue = venueRepository.findById(request.getVenueId())
+        Venue venue = venueRepository.findById(request.getVenueId().getId())
                 .orElseThrow(() -> new RuntimeException("Venue not found"));
 
         Event event = new Event();
