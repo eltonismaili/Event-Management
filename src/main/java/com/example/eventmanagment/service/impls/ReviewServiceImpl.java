@@ -4,6 +4,9 @@ import com.example.eventmanagment.dto.review.ReviewDto;
 import com.example.eventmanagment.entities.Event;
 import com.example.eventmanagment.entities.Review;
 import com.example.eventmanagment.entities.User;
+import com.example.eventmanagment.exceptions.event.EventNotFoundException;
+import com.example.eventmanagment.exceptions.review.ReviewNotFoundException;
+import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.ReviewMapper;
 import com.example.eventmanagment.repository.EventRepository;
 import com.example.eventmanagment.repository.ReviewRepository;
@@ -31,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDto findById(Long id) {
         var review = reviewRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Review not found with id: " + id));
+                .orElseThrow(() -> new ReviewNotFoundException(id));
         return reviewMapper.toDto(review);
     }
 
@@ -39,11 +42,11 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto create(ReviewDto dto) {
         // load User by nested DTO id
         User user = userRepository.findById(dto.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId().getId()));
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId().getId()));
 
         // load Event by nested DTO id
         Event event = eventRepository.findById(dto.getEventId().getId())
-                .orElseThrow(() -> new RuntimeException("Event not found with id: " + dto.getEventId().getId()));
+                .orElseThrow(() -> new EventNotFoundException(dto.getEventId().getId()));
 
         // map incoming DTO to entity, then overwrite user/event
         Review review = reviewMapper.toEntity(dto);
@@ -61,10 +64,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         User user = userRepository.findById(dto.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId().getId()));
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId().getId()));
 
         Event event = eventRepository.findById(dto.getEventId().getId())
-                .orElseThrow(() -> new RuntimeException("Event not found with id: " + dto.getEventId().getId()));
+                .orElseThrow(() -> new EventNotFoundException(dto.getEventId().getId()));
 
         Review review = reviewMapper.toEntity(dto);
         review.setId(id);
@@ -78,7 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void delete(Long id) {
         if (!reviewRepository.existsById(id)) {
-            throw new RuntimeException("Review not found with id: " + id);
+            throw new ReviewNotFoundException(id);
         }
         reviewRepository.deleteById(id);
     }

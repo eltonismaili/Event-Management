@@ -5,6 +5,9 @@ import com.example.eventmanagment.dto.user.UpdateUserRequest;
 import com.example.eventmanagment.dto.user.UserDto;
 import com.example.eventmanagment.entities.Address;
 import com.example.eventmanagment.entities.Role;
+import com.example.eventmanagment.exceptions.address.AddressNotFoundException;
+import com.example.eventmanagment.exceptions.role.RoleNotFoundException;
+import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.UserMapper;
 import com.example.eventmanagment.repository.AddressRepository;
 import com.example.eventmanagment.repository.RoleRepository;
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final AddressRepository addressRepository;
+
     @Override
     public List<UserDto> findAll() {
         var users = userRepository.findAll();
@@ -32,8 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(Long id) {
-       var user = userRepository.findById(id)
-               .orElseThrow(() -> new RuntimeException("User not found"));
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toDto(user);
     }
 
@@ -42,11 +46,11 @@ public class UserServiceImpl implements UserService {
         var user = userMapper.toEntityCreate(request);
 
         Role role = roleRepository.findById(request.getRoleId().getId())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new RoleNotFoundException(request.getRoleId().getId()));
         user.setRoleId(role);
 
         Address address = addressRepository.findById(request.getAddressId().getId())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new AddressNotFoundException(request.getAddressId().getId()));
         user.setAddressId(address);
         return userMapper.toDto(userRepository.save(user));
     }
@@ -54,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(Long id, UpdateUserRequest request) {
         if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found");
+            throw new UserNotFoundException(id);
         }
         var user = userMapper.toEntityUpdate(request);
         var updatedUser = userRepository.save(user);
@@ -63,9 +67,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-       var userToDelete = userRepository.findById(id);
-       if (userToDelete != null) {
-           userRepository.deleteById(id);
-       }
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+        userRepository.deleteById(id);
     }
 }

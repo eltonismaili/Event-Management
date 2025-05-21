@@ -1,6 +1,8 @@
 package com.example.eventmanagment.service.impls;
 
 import com.example.eventmanagment.dto.category.CategoryDto;
+import com.example.eventmanagment.exceptions.category.CategoryNotFoundException;
+import com.example.eventmanagment.exceptions.registration.RegistrationNotFoundException;
 import com.example.eventmanagment.mapper.CategoryMapper;
 import com.example.eventmanagment.repository.CategoryRepository;
 import com.example.eventmanagment.service.CategoryService;
@@ -24,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto findById(Long id) {
         var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new CategoryNotFoundException(id));
         return categoryMapper.toDto(category);
     }
 
@@ -38,11 +40,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto update(Long id, CategoryDto categoryDto) {
         if (!id.equals(categoryDto.getId())) {
-            throw new IllegalArgumentException("Id in path and body must be the same");
+            throw new RegistrationNotFoundException(id);
         }
 
         var existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new CategoryNotFoundException(id));
 
         existingCategory.setName(categoryDto.getName());
 
@@ -53,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            throw new CategoryNotFoundException(id);
         }
         categoryRepository.deleteById(id);
     }

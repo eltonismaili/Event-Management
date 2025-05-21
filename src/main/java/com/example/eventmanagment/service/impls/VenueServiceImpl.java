@@ -2,6 +2,8 @@ package com.example.eventmanagment.service.impls;
 
 import com.example.eventmanagment.dto.venue.VenueDto;
 import com.example.eventmanagment.entities.Address;
+import com.example.eventmanagment.exceptions.address.AddressNotFoundException;
+import com.example.eventmanagment.exceptions.venue.VenueNotFoundException;
 import com.example.eventmanagment.mapper.VenueMapper;
 import com.example.eventmanagment.repository.AddressRepository;
 import com.example.eventmanagment.repository.VenueRepository;
@@ -29,7 +31,7 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public VenueDto findById(Long id) {
         var venue = venueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Venue not found with id: " + id));
+                .orElseThrow(() -> new VenueNotFoundException(id));
         return venueMapper.toDto(venue);
     }
 
@@ -52,13 +54,13 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public VenueDto update(Long id, VenueDto venueDto) {
         if (!venueRepository.existsById(id)) {
-            throw new RuntimeException("Venue not found with id: " + id);
+            throw new VenueNotFoundException("Venue not found with id: " + id);
         }
 
         var venue = venueMapper.toEntity(venueDto);
 
         Address address = addressRepository.findById(venueDto.getAddress().getId())
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + venueDto.getAddress().getId()));
+                .orElseThrow(() -> new AddressNotFoundException(venueDto.getAddress().getId()));
 
         venue.setAddress(address);
         var updatedVenue = venueRepository.save(venue);
@@ -69,7 +71,7 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public void delete(Long id) {
         if (!venueRepository.existsById(id)) {
-            throw new RuntimeException("Venue not found with id: " + id);
+            throw new VenueNotFoundException(id);
         }
         venueRepository.deleteById(id);
     }

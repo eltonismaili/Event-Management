@@ -4,6 +4,9 @@ import com.example.eventmanagment.dto.registration.RegistrationDto;
 import com.example.eventmanagment.entities.Event;
 import com.example.eventmanagment.entities.Registration;
 import com.example.eventmanagment.entities.User;
+import com.example.eventmanagment.exceptions.event.EventNotFoundException;
+import com.example.eventmanagment.exceptions.registration.RegistrationNotFoundException;
+import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.RegistrationMapper;
 import com.example.eventmanagment.repository.EventRepository;
 import com.example.eventmanagment.repository.RegistrationRepository;
@@ -31,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public RegistrationDto findById(Long id) {
         var registration = registrationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registration not found"));
+                .orElseThrow(() -> new RegistrationNotFoundException(id));
         return registrationMapper.toDto(registration);
     }
 
@@ -40,10 +43,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         var registration = registrationMapper.toEntity(dto);
         User user = userRepository.findById(dto.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId().getId()));
         registration.setUserId(user);
         Event event = eventRepository.findById(dto.getEventId().getId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new EventNotFoundException(dto.getEventId().getId()));
         registration.setEventId(event);
 
 
@@ -57,10 +60,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         User user = userRepository.findById(dto.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId().getId()));
 
         Event event = eventRepository.findById(dto.getEventId().getId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new EventNotFoundException(dto.getEventId().getId()));
 
         Registration registration = registrationMapper.toEntity(dto);
         registration.setId(id);
@@ -74,7 +77,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void delete(Long id) {
         if (!registrationRepository.existsById(id)) {
-            throw new RuntimeException("Registration not found");
+            throw new RegistrationNotFoundException(id);
         }
         registrationRepository.deleteById(id);
     }

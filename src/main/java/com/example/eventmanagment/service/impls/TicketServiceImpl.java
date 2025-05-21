@@ -4,6 +4,9 @@ import com.example.eventmanagment.dto.ticket.TicketDto;
 import com.example.eventmanagment.entities.Event;
 import com.example.eventmanagment.entities.Ticket;
 import com.example.eventmanagment.entities.User;
+import com.example.eventmanagment.exceptions.event.EventNotFoundException;
+import com.example.eventmanagment.exceptions.ticket.TicketNotFoundException;
+import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.TicketMapper;
 import com.example.eventmanagment.repository.EventRepository;
 import com.example.eventmanagment.repository.TicketRepository;
@@ -31,7 +34,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketDto findById(Long id) {
         var ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
+                .orElseThrow(() -> new TicketNotFoundException(id));
         return ticketMapper.toDto(ticket);
     }
 
@@ -40,10 +43,10 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = ticketMapper.toEntity(ticketDto);
 
         Event event = eventRepository.findById(ticketDto.getEventId().getId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new EventNotFoundException(ticketDto.getEventId().getId()));
 
         User user = userRepository.findById(ticketDto.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId().getId()));
 
         ticket.setEvent(event);
         ticket.setUser(user);
@@ -55,7 +58,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketDto update(Long id, TicketDto ticketDto) {
         if (!ticketRepository.existsById(id)) {
-            throw new RuntimeException("Ticket not found");
+            throw new TicketNotFoundException(id);
         }
 
         if (!id.equals(ticketDto.getId())) {
@@ -65,10 +68,10 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = ticketMapper.toEntity(ticketDto);
 
         Event event = eventRepository.findById(ticketDto.getEventId().getId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new EventNotFoundException(ticketDto.getEventId().getId()));
 
         User user = userRepository.findById(ticketDto.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId().getId()));
 
         ticket.setEvent(event);
         ticket.setUser(user);
@@ -80,7 +83,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void delete(Long id) {
         if (!ticketRepository.existsById(id)) {
-            throw new RuntimeException("Ticket not found");
+            throw new TicketNotFoundException(id);
         }
         ticketRepository.deleteById(id);
     }

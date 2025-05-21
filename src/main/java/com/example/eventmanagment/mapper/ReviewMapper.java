@@ -13,7 +13,7 @@ public interface ReviewMapper {
     @Mapping(source = "event", target = "eventId")
     ReviewDto toDto(Review review);
 
-    /** DTO → Entity **/
+
     @Mapping(source = "userId",  target = "user")
     @Mapping(source = "eventId", target = "event")
     Review toEntity(ReviewDto dto);

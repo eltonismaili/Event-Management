@@ -1,6 +1,7 @@
 package com.example.eventmanagment.service.impls;
 
 import com.example.eventmanagment.dto.role.RoleDto;
+import com.example.eventmanagment.exceptions.role.RoleNotFoundException;
 import com.example.eventmanagment.mapper.RoleMapper;
 import com.example.eventmanagment.repository.RoleRepository;
 import com.example.eventmanagment.service.RoleService;
@@ -15,6 +16,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository repository;
     private final RoleMapper mapper;
     private final RoleMapper roleMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     public List<RoleDto> findAll() {
@@ -24,7 +26,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDto findById(Long id) {
-        var role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        var role = repository.findById(id).orElseThrow(() -> new RoleNotFoundException(id));
         return mapper.toDto(role);
     }
 
@@ -37,8 +39,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDto update(Long id, RoleDto roleDto) {
-        if (!id.equals(roleDto.getId())) {
-            throw new IllegalArgumentException("Id in path and body must be the same");
+        if (!roleRepository.existsById(id)) {
+            throw new RoleNotFoundException(id);
         }
         var roles = roleMapper.toEntity(roleDto);
         var updatedRoles = repository.save(roles);
@@ -48,7 +50,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Role not found");
+            throw new RoleNotFoundException(id);
         }
         repository.deleteById(id);
 

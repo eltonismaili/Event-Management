@@ -7,6 +7,10 @@ import com.example.eventmanagment.entities.Category;
 import com.example.eventmanagment.entities.Event;
 import com.example.eventmanagment.entities.User;
 import com.example.eventmanagment.entities.Venue;
+import com.example.eventmanagment.exceptions.category.CategoryNotFoundException;
+import com.example.eventmanagment.exceptions.event.EventNotFoundException;
+import com.example.eventmanagment.exceptions.user.UserNotFoundException;
+import com.example.eventmanagment.exceptions.venue.VenueNotFoundException;
 import com.example.eventmanagment.mapper.EventMapper;
 import com.example.eventmanagment.repository.CategoryRepository;
 import com.example.eventmanagment.repository.EventRepository;
@@ -41,20 +45,20 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto findById(Long id) {
         Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
+                .orElseThrow(() -> new EventNotFoundException(id));
         return eventMapper.toDto(event);
     }
 
     @Override
     public EventDto create(CreateEventRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId().getId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException(request.getCategoryId().getId()));
 
         User user = userRepository.findById(request.getUserId().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(request.getUserId().getId()));
 
         Venue venue = venueRepository.findById(request.getVenueId().getId())
-                .orElseThrow(() -> new RuntimeException("Venue not found"));
+                .orElseThrow(() -> new VenueNotFoundException(request.getVenueId().getId()));
 
         Event event = new Event();
         event.setName(request.getName());

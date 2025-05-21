@@ -2,6 +2,8 @@ package com.example.eventmanagment.service.impls;
 
 
 import com.example.eventmanagment.dto.address.AddressDto;
+import com.example.eventmanagment.exceptions.address.AddressNotFoundException;
+import com.example.eventmanagment.exceptions.role.RoleNotFoundException;
 import com.example.eventmanagment.mapper.AddressMapper;
 import com.example.eventmanagment.repository.AddressRepository;
 import com.example.eventmanagment.service.AddressService;
@@ -26,7 +28,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressDto findById(Long id) {
         var address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new AddressNotFoundException(id));
         return addressMapper.toDto(address);
     }
 
@@ -38,18 +40,18 @@ public class AddressServiceImpl implements AddressService {
     }
 
     public AddressDto update(Long id, AddressDto addressDto) {
-       if (!id.equals(addressDto.getId())){
-           throw new IllegalArgumentException("Id in path and body must be the same");
-       }
-       var addresses = addressMapper.toEntity(addressDto);
-       var updatedAddress = addressRepository.save(addresses);
-       return addressMapper.toDto(updatedAddress);
+        if (!addressRepository.existsById(id)) {
+            throw new AddressNotFoundException(id);
+        }
+        var addresses = addressMapper.toEntity(addressDto);
+        var updatedAddress = addressRepository.save(addresses);
+        return addressMapper.toDto(updatedAddress);
     }
 
     @Override
     public void delete(Long id) {
-        if (!addressRepository.existsById(id)){
-            throw new RuntimeException("Address not found");
+        if (!addressRepository.existsById(id)) {
+            throw new AddressNotFoundException(id);
         }
         addressRepository.deleteById(id);
 
