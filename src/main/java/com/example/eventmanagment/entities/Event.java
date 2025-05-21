@@ -34,12 +34,12 @@ public class Event {
     @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
 
-    @Column(name = "start_date", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime startDate;
 
     @Column(nullable = false)
     private String imageUrl;
-    @Column(name = "end_date", nullable = false)
+    @Column( nullable = false)
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)

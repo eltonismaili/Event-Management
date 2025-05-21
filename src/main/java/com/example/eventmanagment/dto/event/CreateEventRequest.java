@@ -31,10 +31,10 @@ public class CreateEventRequest {
     private UserDto userId;
 
     @NotNull
-    private LocalDateTime startTime;
+    private LocalDateTime startDate;
 
     @NotNull
-    private LocalDateTime endTime;
+    private LocalDateTime endDate;
 
     @NotBlank
     private String imageUrl;

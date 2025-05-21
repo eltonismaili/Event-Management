@@ -16,7 +16,6 @@ import com.example.eventmanagment.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto create(CreateEventRequest request) {
+        var event = eventMapper.toEntityCreate(request);
         Category category = categoryRepository.findById(request.getCategoryId().getId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -56,21 +56,12 @@ public class EventServiceImpl implements EventService {
         Venue venue = venueRepository.findById(request.getVenueId().getId())
                 .orElseThrow(() -> new RuntimeException("Venue not found"));
 
-        Event event = new Event();
-        event.setName(request.getName());
-        event.setDescription(request.getDescription());
-        event.setStartDate(request.getStartTime());
-        event.setEndDate(request.getEndTime());
-        event.setImageUrl(request.getImageUrl());
-        event.setEventType(request.getEventType());
         event.setCategory(category);
-        event.setVenue(venue);
         event.setUser(user);
-        event.setCreatedBy(request.getCreatedBy());
-        event.setCreatedAt(LocalDateTime.now());
+        event.setVenue(venue);
 
-        Event saved = eventRepository.save(event);
-        return eventMapper.toDto(saved);
+
+        return eventMapper.toDto(eventRepository.save(event));
     }
 
     @Override
