@@ -33,7 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-//                if (userDetails instanceof AppUser)
+                if (userDetails instanceof AppUserDetails){
+                    request.setAttribute("userId", ((AppUserDetails)userDetails).getId());
+                }
+
             }
 
         } catch (Exception e) {

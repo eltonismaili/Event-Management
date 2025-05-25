@@ -3,7 +3,6 @@ package com.example.eventmanagment.service.impls;
 
 import com.example.eventmanagment.dto.address.AddressDto;
 import com.example.eventmanagment.exceptions.address.AddressNotFoundException;
-import com.example.eventmanagment.exceptions.role.RoleNotFoundException;
 import com.example.eventmanagment.mapper.AddressMapper;
 import com.example.eventmanagment.repository.AddressRepository;
 import com.example.eventmanagment.service.AddressService;
