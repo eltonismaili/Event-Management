@@ -1,5 +1,6 @@
 package com.example.eventmanagment.entities;
 
+import com.example.eventmanagment.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -33,9 +34,8 @@ public class User {
     @Column(name = "age", nullable = false)
     @NotNull
     private int age;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role roleId;
+    @Enumerated(EnumType.STRING)
+    private Role roles;
     @OneToOne
     @JoinColumn(name = "address_id")
     private Address addressId;

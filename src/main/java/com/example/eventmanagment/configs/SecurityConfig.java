@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.example.eventmanagment.entities.enums.Permission.*;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -40,10 +42,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/users/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").permitAll()
@@ -57,10 +59,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/roles").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/roles/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/events").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyAuthority(ADMIN_READ.name(), USER_READ.name())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/events").hasAnyAuthority(ADMIN_WRITE.name())
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasAnyAuthority(ADMIN_WRITE.name())
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasAnyAuthority(ADMIN_WRITE.name())
                         .requestMatchers(HttpMethod.GET, "/api/v1/venues/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/venues").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/venues/**").permitAll()
@@ -90,6 +92,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         var user = new AppUserDetailsService(userRepository);

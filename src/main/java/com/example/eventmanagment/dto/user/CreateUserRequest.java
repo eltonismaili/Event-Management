@@ -1,7 +1,7 @@
 package com.example.eventmanagment.dto.user;
 
 import com.example.eventmanagment.dto.address.AddressDto;
-import com.example.eventmanagment.dto.role.RoleDto;
+import com.example.eventmanagment.entities.enums.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,7 +38,7 @@ public class CreateUserRequest {
     private Integer age;
 
     @NotNull
-    private RoleDto roleId;
+    private Role roles;
 
     @NotNull
     private AddressDto addressId;

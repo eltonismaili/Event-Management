@@ -4,13 +4,10 @@ import com.example.eventmanagment.dto.user.CreateUserRequest;
 import com.example.eventmanagment.dto.user.UpdateUserRequest;
 import com.example.eventmanagment.dto.user.UserDto;
 import com.example.eventmanagment.entities.Address;
-import com.example.eventmanagment.entities.Role;
 import com.example.eventmanagment.exceptions.address.AddressNotFoundException;
-import com.example.eventmanagment.exceptions.role.RoleNotFoundException;
 import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.UserMapper;
 import com.example.eventmanagment.repository.AddressRepository;
-import com.example.eventmanagment.repository.RoleRepository;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +22,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final RoleRepository roleRepository;
     private final AddressRepository addressRepository;
 
     @Override
@@ -45,9 +41,6 @@ public class UserServiceImpl implements UserService {
     public UserDto create(CreateUserRequest request) {
         var user = userMapper.toEntityCreate(request);
 
-        Role role = roleRepository.findById(request.getRoleId().getId())
-                .orElseThrow(() -> new RoleNotFoundException(request.getRoleId().getId()));
-        user.setRoleId(role);
 
         Address address = addressRepository.findById(request.getAddressId().getId())
                 .orElseThrow(() -> new AddressNotFoundException(request.getAddressId().getId()));
