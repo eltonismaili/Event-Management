@@ -8,6 +8,7 @@ import com.example.eventmanagment.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +16,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/events")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class EventController {
     private final EventService eventService;
 
     // GET all events
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('admin:read')")
     public ResponseEntity<List<EventDto>> getAllEvents() {
         List<EventDto> events = eventService.findAll();
         return ResponseEntity.ok(events);

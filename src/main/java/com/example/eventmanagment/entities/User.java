@@ -36,7 +36,7 @@ public class User {
     private int age;
     @Enumerated(EnumType.STRING)
     private Role roles;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "address_id")
     private Address addressId;
     @Column(name = "created_at")

@@ -11,6 +11,7 @@ import com.example.eventmanagment.repository.AddressRepository;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +20,10 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final AddressRepository addressRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDto> findAll() {
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserDto create(CreateUserRequest request) {
         var user = userMapper.toEntityCreate(request);
 
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         Address address = addressRepository.findById(request.getAddressId().getId())
                 .orElseThrow(() -> new AddressNotFoundException(request.getAddressId().getId()));

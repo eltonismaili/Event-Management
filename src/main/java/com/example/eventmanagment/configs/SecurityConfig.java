@@ -1,6 +1,7 @@
 package com.example.eventmanagment.configs;
 
 import com.example.eventmanagment.entities.User;
+import com.example.eventmanagment.entities.enums.Role;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.security.AppUserDetailsService;
 import com.example.eventmanagment.security.JwtAuthenticationFilter;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.example.eventmanagment.entities.enums.Permission.*;
+import static com.example.eventmanagment.entities.enums.Permission.ADMIN_READ;
 
 @Configuration
 @EnableWebSecurity
@@ -59,10 +60,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/roles").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/roles/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyAuthority(ADMIN_READ.name(), USER_READ.name())
-                        .requestMatchers(HttpMethod.POST, "/api/v1/events").hasAnyAuthority(ADMIN_WRITE.name())
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasAnyAuthority(ADMIN_WRITE.name())
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasAnyAuthority(ADMIN_WRITE.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyAuthority(ADMIN_READ.getPermission())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/events").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/venues/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/venues").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/venues/**").permitAll()
@@ -106,6 +107,7 @@ public class SecurityConfig {
                             .email(email)
                             .password(passwordEncoder().encode("password"))
                             .age(20)
+                            .roles(Role.ADMIN)
                             .build();
 
                     return userRepository.save(newUser);
