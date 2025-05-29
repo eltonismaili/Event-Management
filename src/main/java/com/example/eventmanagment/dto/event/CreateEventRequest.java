@@ -36,7 +36,6 @@ public class CreateEventRequest {
     @NotNull
     private LocalDateTime endDate;
 
-
     private String imageUrl;
 
     @NotNull
