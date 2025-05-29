@@ -44,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
+        //can u make for me to add address from user
+
+
         Address address = addressRepository.findById(request.getAddressId().getId())
                 .orElseThrow(() -> new AddressNotFoundException(request.getAddressId().getId()));
         user.setAddressId(address);
