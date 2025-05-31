@@ -16,7 +16,7 @@ public class Venue {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 

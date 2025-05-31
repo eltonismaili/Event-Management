@@ -1,10 +1,7 @@
 package com.example.eventmanagment.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,7 +9,7 @@ import lombok.Setter;
 @Table(name = "addresses")
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Builder
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

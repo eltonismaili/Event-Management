@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        //can u make for me to add address from user
+
+        Address address = user.getAddress();
+        Address savedAddress = addressRepository.save(address);
 
 
-        Address address = addressRepository.findById(request.getAddressId().getId())
-                .orElseThrow(() -> new AddressNotFoundException(request.getAddressId().getId()));
-        user.setAddressId(address);
+        user.setAddress(savedAddress);
         return userMapper.toDto(userRepository.save(user));
     }
 

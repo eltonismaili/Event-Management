@@ -35,6 +35,6 @@ public class UserDto {
     @NotNull
     private Role roles;
     @NotNull
-    private AddressDto addressId;
+    private AddressDto address;
 
 }

@@ -1,7 +1,9 @@
 package com.example.eventmanagment.configs;
 
+import com.example.eventmanagment.entities.Address;
 import com.example.eventmanagment.entities.User;
 import com.example.eventmanagment.entities.enums.Role;
+import com.example.eventmanagment.repository.AddressRepository;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.security.AppUserDetailsService;
 import com.example.eventmanagment.security.JwtAuthenticationFilter;
@@ -95,12 +97,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
+    public UserDetailsService userDetailsService(UserRepository userRepository,
+                                                 AddressRepository addressRepository) {
         var user = new AppUserDetailsService(userRepository);
 
         String email = "elton@gmail.com";
         userRepository.findByEmail(email)
                 .orElseGet(() -> {
+                    // Create or fetch an Address first
+                    Address address = Address.builder()
+                            .street("123 Main St")
+                            .city("Springfield")
+                            .zipCode("12345")
+                            .country("USA")
+                            .build();
+
+                    // Save the address to generate its ID
+                    Address savedAddress = addressRepository.save(address);
+
                     var newUser = User.builder()
                             .name("Elton")
                             .surname("Silva")
@@ -108,6 +122,7 @@ public class SecurityConfig {
                             .password(passwordEncoder().encode("password"))
                             .age(20)
                             .roles(Role.ADMIN)
+                            .address(savedAddress)    // <-- Assign the saved address here
                             .build();
 
                     return userRepository.save(newUser);

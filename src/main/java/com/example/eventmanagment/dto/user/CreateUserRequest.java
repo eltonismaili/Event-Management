@@ -41,7 +41,7 @@ public class CreateUserRequest {
     private Role roles;
 
     @NotNull
-    private AddressDto addressId;
+    private AddressDto address;
 
     @Size(min = 2, max = 50, message = "Created by must be between 2 and 50 characters")
     @NotNull

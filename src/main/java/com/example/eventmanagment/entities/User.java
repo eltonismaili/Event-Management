@@ -22,7 +22,7 @@ public class User {
     @Column(name = "name", nullable = false)
     @NotNull
     private String name;
-    @Column(name = "surname", nullable = false )
+    @Column(name = "surname", nullable = false)
     @NotNull
     private String surname;
     @Column(name = "email", nullable = false, unique = true)
@@ -37,8 +37,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role roles;
     @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address addressId;
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "created_by")
