@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDto {
     private Long id;
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 55)
     @NotNull
     @NotBlank
     private String name;
