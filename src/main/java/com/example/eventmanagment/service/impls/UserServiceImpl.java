@@ -4,6 +4,7 @@ import com.example.eventmanagment.dto.user.CreateUserRequest;
 import com.example.eventmanagment.dto.user.UpdateUserRequest;
 import com.example.eventmanagment.dto.user.UserDto;
 import com.example.eventmanagment.entities.Address;
+import com.example.eventmanagment.entities.enums.Role;
 import com.example.eventmanagment.exceptions.address.AddressNotFoundException;
 import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.UserMapper;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
 
         user.setAddress(savedAddress);
+
         return userMapper.toDto(userRepository.save(user));
     }
 
