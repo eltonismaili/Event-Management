@@ -41,20 +41,20 @@ public class EventController {
 
     // POST create event
     @PostMapping
-    public ResponseEntity<EventDto> createEvent(@RequestBody @Valid CreateEventRequest request, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<EventDto> createEvent(@RequestBody @Valid CreateEventRequest request) {
 
-        try {
-            if (!file.isEmpty()) {
-                String fileName = fileHelper.uploadFile(
-                        "target/classes/static/assets/files/images",
-                        file.getOriginalFilename(),
-                        file.getBytes()
-                );
-                request.setImageUrl("/assets/files/images/" + fileName);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("File upload failed: " + e.getMessage());
-        }
+//        try {
+//            if (!file.isEmpty()) {
+//                String fileName = fileHelper.uploadFile(
+//                        "target/classes/static/assets/files/images",
+//                        file.getOriginalFilename(),
+//                        file.getBytes()
+//                );
+//                request.setImageUrl("/assets/files/images/" + fileName);
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException("File upload failed: " + e.getMessage());
+//        }
         EventDto created = eventService.create(request);
         return ResponseEntity.ok(created);
     }
