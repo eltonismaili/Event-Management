@@ -5,14 +5,16 @@ import com.example.eventmanagment.dto.user.UpdateUserRequest;
 import com.example.eventmanagment.dto.user.UserDto;
 import com.example.eventmanagment.entities.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {AddressMapper.class})
 public interface UserMapper {
     UserDto toDto(User user);
-    User toEntity(UserDto userDto);
 
+    User toEntity(UserDto userDto);
 
 
     User toEntityCreate(CreateUserRequest request);
@@ -20,5 +22,6 @@ public interface UserMapper {
     User toEntityUpdate(UpdateUserRequest request);
 
     List<UserDto> toDtoList(List<User> users);
+
     List<User> toEntityList(List<UserDto> userDtos);
 }

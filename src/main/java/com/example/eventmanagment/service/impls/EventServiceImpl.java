@@ -3,10 +3,7 @@ package com.example.eventmanagment.service.impls;
 import com.example.eventmanagment.dto.event.CreateEventRequest;
 import com.example.eventmanagment.dto.event.EventDto;
 import com.example.eventmanagment.dto.event.UpdateEventRequest;
-import com.example.eventmanagment.entities.Category;
-import com.example.eventmanagment.entities.Event;
-import com.example.eventmanagment.entities.User;
-import com.example.eventmanagment.entities.Venue;
+import com.example.eventmanagment.entities.*;
 import com.example.eventmanagment.exceptions.category.CategoryNotFoundException;
 import com.example.eventmanagment.exceptions.event.EventNotFoundException;
 import com.example.eventmanagment.exceptions.user.UserNotFoundException;
@@ -51,18 +48,30 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto create(CreateEventRequest request) {
         var event = eventMapper.toEntityCreate(request);
-        Category category = categoryRepository.findById(request.getCategoryId().getId())
-                .orElseThrow(() -> new CategoryNotFoundException(request.getCategoryId().getId()));
+//        Category category = categoryRepository.findById(request.getCategoryId().getId())
+//                .orElseThrow(() -> new CategoryNotFoundException(request.getCategoryId().getId()));
+
+        Category category = event.getCategory();
+        Category savedCategory = categoryRepository.save(category);
+
 
         User user = userRepository.findById(request.getUserId().getId())
                 .orElseThrow(() -> new UserNotFoundException(request.getUserId().getId()));
 
-        Venue venue = venueRepository.findById(request.getVenueId().getId())
-                .orElseThrow(() -> new VenueNotFoundException(request.getVenueId().getId()));
 
-        event.setCategory(category);
+//        Venue venue = venueRepository.findById(request.getVenueId().getId())
+//                .orElseThrow(() -> new VenueNotFoundException(request.getVenueId().getId()));
+
+        Venue venue = event.getVenue();
+        Venue savedVenue = venueRepository.save(venue);
+//
+
+
+
+
+        event.setCategory(savedCategory);
         event.setUser(user);
-        event.setVenue(venue);
+        event.setVenue(savedVenue);
 
 
         return eventMapper.toDto(eventRepository.save(event));
