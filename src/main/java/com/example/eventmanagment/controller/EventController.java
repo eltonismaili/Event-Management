@@ -62,19 +62,19 @@ public class EventController {
     // PUT update event
     @PutMapping("/{id}")
     public ResponseEntity<EventDto> updateEvent(@PathVariable Long id,
-                                                @RequestBody @Valid UpdateEventRequest request, @RequestParam("file") MultipartFile file) {
-        try {
-            if (!file.isEmpty()) {
-                String fileName = fileHelper.uploadFile(
-                        "target/classes/static/assets/files/images",
-                        file.getOriginalFilename(),
-                        file.getBytes()
-                );
-                request.setImageUrl("/assets/files/images/" + fileName);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("File upload failed: " + e.getMessage());
-        }
+                                                @RequestBody @Valid UpdateEventRequest request) {
+//        try {
+//            if (!file.isEmpty()) {
+//                String fileName = fileHelper.uploadFile(
+//                        "target/classes/static/assets/files/images",
+//                        file.getOriginalFilename(),
+//                        file.getBytes()
+//                );
+//                request.setImageUrl("/assets/files/images/" + fileName);
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException("File upload failed: " + e.getMessage());
+//        }
         EventDto updated = eventService.update(id, request);
         return ResponseEntity.ok(updated);
     }
@@ -84,5 +84,10 @@ public class EventController {
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/default")
+    public CreateEventRequest getDefaultEvent() {
+        return new CreateEventRequest();
     }
 }

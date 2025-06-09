@@ -12,18 +12,19 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class, CategoryMapper.class, VenueMapper.class})
 public interface EventMapper {
-    @Mapping(source = "user", target = "userId")
-    @Mapping(source = "category", target = "categoryId")
-    @Mapping(source = "venue", target = "venueId")
+
+    @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "venue.id", target = "venueId")
     EventDto toDto(Event event);
 
     Event toEntity(EventDto dto);
 
-    @Mapping(source = "userId",     target = "user")
-    @Mapping(source = "categoryId", target = "category")
-    @Mapping(source = "venueId",    target = "venue")
+
+
     Event toEntityCreate(CreateEventRequest request);
 
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "venue", ignore = true)
     void updateEntityFromDto(UpdateEventRequest dto, @MappingTarget Event event);
 
     List<EventDto> toDtoList(List<Event> events);

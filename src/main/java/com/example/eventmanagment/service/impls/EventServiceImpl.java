@@ -17,6 +17,7 @@ import com.example.eventmanagment.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,30 +49,26 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto create(CreateEventRequest request) {
         var event = eventMapper.toEntityCreate(request);
-//        Category category = categoryRepository.findById(request.getCategoryId().getId())
-//                .orElseThrow(() -> new CategoryNotFoundException(request.getCategoryId().getId()));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(request.getCategoryId()));
 
-        Category category = event.getCategory();
-        Category savedCategory = categoryRepository.save(category);
-
-
-        User user = userRepository.findById(request.getUserId().getId())
-                .orElseThrow(() -> new UserNotFoundException(request.getUserId().getId()));
+//        Category category = event.getCategory();
+//        Category savedCategory = categoryRepository.save(category);
 
 
-//        Venue venue = venueRepository.findById(request.getVenueId().getId())
-//                .orElseThrow(() -> new VenueNotFoundException(request.getVenueId().getId()));
+        Venue venue = venueRepository.findById(request.getVenueId())
+                .orElseThrow(() -> new VenueNotFoundException(request.getVenueId()));
 
-        Venue venue = event.getVenue();
-        Venue savedVenue = venueRepository.save(venue);
+//        Venue venue = event.getVenue();
+//        Venue savedVenue = venueRepository.save(venue);
+
+        event.setCreatedBy(AuthenticationServiceImpl.getLoggedInUserEmail());
+        event.setCreatedAt(LocalDateTime.now());
 //
 
 
-
-
-        event.setCategory(savedCategory);
-        event.setUser(user);
-        event.setVenue(savedVenue);
+        event.setCategory(category);
+        event.setVenue(venue);
 
 
         return eventMapper.toDto(eventRepository.save(event));
@@ -84,7 +81,17 @@ public class EventServiceImpl implements EventService {
 
         eventMapper.updateEntityFromDto(request, existing);
 
+        existing.setUpdatedBy(AuthenticationServiceImpl.getLoggedInUserEmail());
+        existing.setUpdatedAt(LocalDateTime.now());
 
+        Category category = categoryRepository.findById(request.getCategory())
+                .orElseThrow(() -> new CategoryNotFoundException(request.getCategory()));
+        existing.setCategory(category);
+        Venue venue = venueRepository.findById(request.getVenue())
+                .orElseThrow(() -> new VenueNotFoundException(request.getVenue()));
+        existing.setVenue(venue);
+
+        System.out.println("updated req" + existing.getUpdatedBy());
         Event updated = eventRepository.save(existing);
         return eventMapper.toDto(updated);
     }

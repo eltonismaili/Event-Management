@@ -1,6 +1,0 @@
-ALTER TABLE users
-    ADD roles VARCHAR(255);
-
-ALTER TABLE users
-DROP
-COLUMN role_id;

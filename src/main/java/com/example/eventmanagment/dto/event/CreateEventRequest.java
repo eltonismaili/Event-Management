@@ -27,8 +27,7 @@ public class CreateEventRequest {
     @NotBlank
     private String description;
 
-    @NotNull
-    private UserDto userId;
+
 
     @NotNull
     private LocalDateTime startDate;
@@ -42,10 +41,10 @@ public class CreateEventRequest {
     private EventType eventType;
 
     @NotNull
-    private CategoryDto categoryId;
-
+    private Long categoryId;
+    
     @NotNull
-    private VenueDto venueId;
+    private Long venueId;
 
     @Size(min = 2, max = 50, message = "Created by must be between 2 and 50 characters")
     @NotBlank

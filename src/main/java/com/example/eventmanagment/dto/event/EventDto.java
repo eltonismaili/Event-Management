@@ -25,9 +25,7 @@ public class EventDto {
     @Size(min = 2, max = 1000,message = "Description must be between 2 and 1000 characters")
     @NotNull
     private String description;
-    @NotNull
 
-    private UserDto userId;
     @NotBlank
     @NotNull
     private LocalDateTime startDate;
@@ -40,10 +38,10 @@ public class EventDto {
     @NotNull
     private EventType eventType;
     @NotNull
-    private CategoryDto categoryId;
+    private Long categoryId;
 
     @NotNull
-    private VenueDto venueId;
+    private Long venueId;
 
     @Size(min = 2, max = 50,message = "Created by must be between 2 and 50 characters")
     @NotNull

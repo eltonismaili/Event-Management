@@ -1,3 +1,2 @@
-DROP TABLE registration_tickets CASCADE;
-
-DROP TABLE roles CASCADE;
+ALTER TABLE events
+DROP COLUMN user_id

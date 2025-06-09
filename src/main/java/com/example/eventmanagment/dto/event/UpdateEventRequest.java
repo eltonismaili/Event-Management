@@ -26,30 +26,24 @@ public class UpdateEventRequest {
     @NotNull
     @NotBlank
     private String description;
-    @NotNull
-    @NotBlank
-    private UserDto userId;
-    @NotBlank
+
+
     @NotNull
     private LocalDateTime startDate;
-    @NotBlank
+
     @NotNull
     private LocalDateTime endDate;
     @NotBlank
     @NotNull
     private String imageUrl;
-    @NotBlank
-    @NotNull
     private EventType eventType;
-    @NotBlank
+
     @NotNull
-    private CategoryDto categoryId;
-    @NotBlank
+    private Long category;
+
     @NotNull
-    private VenueDto venueId;
-    @Size(min = 2, max = 50, message = "Created by must be between 2 and 50 characters")
-    @NotNull
-    @NotBlank
+    private Long venue;
+
     private String updatedBy;
 
     private LocalDateTime updatedAt;
