@@ -9,12 +9,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TicketMapper {
-    @Mapping(source = "user", target = "userId")
-    @Mapping(source = "event", target = "eventId")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "event.id", target = "eventId")
     TicketDto toDto(Ticket ticket);
 
-    @Mapping(source = "userId", target = "user")
-    @Mapping(source = "eventId", target = "event")
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "eventId", target = "event.id")
     Ticket toEntity(TicketDto ticketDto);
 
     List<TicketDto> toDtoList(List<Ticket> tickets);

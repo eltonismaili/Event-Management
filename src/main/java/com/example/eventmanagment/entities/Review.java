@@ -26,4 +26,4 @@ public class Review {
 
     @Column(nullable = false)
     private int rating;
-}
+}   

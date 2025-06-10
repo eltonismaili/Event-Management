@@ -42,11 +42,11 @@ public class TicketServiceImpl implements TicketService {
     public TicketDto create(TicketDto ticketDto) {
         Ticket ticket = ticketMapper.toEntity(ticketDto);
 
-        Event event = eventRepository.findById(ticketDto.getEventId().getId())
-                .orElseThrow(() -> new EventNotFoundException(ticketDto.getEventId().getId()));
+        Event event = eventRepository.findById(ticketDto.getEventId())
+                .orElseThrow(() -> new EventNotFoundException(ticketDto.getEventId()));
 
-        User user = userRepository.findById(ticketDto.getUserId().getId())
-                .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId().getId()));
+        User user = userRepository.findById(ticketDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId()));
 
         ticket.setEvent(event);
         ticket.setUser(user);
@@ -67,11 +67,11 @@ public class TicketServiceImpl implements TicketService {
 
         Ticket ticket = ticketMapper.toEntity(ticketDto);
 
-        Event event = eventRepository.findById(ticketDto.getEventId().getId())
-                .orElseThrow(() -> new EventNotFoundException(ticketDto.getEventId().getId()));
+        Event event = eventRepository.findById(ticketDto.getEventId())
+                .orElseThrow(() -> new EventNotFoundException(ticketDto.getEventId()));
 
-        User user = userRepository.findById(ticketDto.getUserId().getId())
-                .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId().getId()));
+        User user = userRepository.findById(ticketDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId()));
 
         ticket.setEvent(event);
         ticket.setUser(user);
