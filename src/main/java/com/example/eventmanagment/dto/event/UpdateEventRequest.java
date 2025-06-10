@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class UpdateEventRequest {
     private Long id;
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
-    @NotNull
+    @NotNull(message = "Name is required")
     @NotBlank
     private String name;
     @Size(min = 2, max = 1000, message = "Description must be between 2 and 1000 characters")
@@ -38,10 +38,10 @@ public class UpdateEventRequest {
     private String imageUrl;
     private EventType eventType;
 
-    @NotNull
+    @NotNull(message = "Category is required")
     private Long category;
 
-    @NotNull
+    @NotNull(message = "Venue is required")
     private Long venue;
 
     private String updatedBy;
