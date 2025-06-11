@@ -33,9 +33,8 @@ public class UpdateEventRequest {
 
     @NotNull
     private LocalDateTime endDate;
-    @NotBlank
-    @NotNull
-    private String imageUrl;
+
+    private String imagePath;
     private EventType eventType;
 
     @NotNull(message = "Category is required")

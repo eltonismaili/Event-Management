@@ -87,6 +87,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/reviews").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/reviews/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())

@@ -32,8 +32,8 @@ public class EventDto {
 
     @NotNull
     private LocalDateTime endDate;
-    @NotNull
-    private String imageUrl;
+
+    private String imagePath;
 
     @NotNull
     private EventType eventType;

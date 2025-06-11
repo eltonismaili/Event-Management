@@ -4,10 +4,10 @@ package com.example.eventmanagment.controller;
 import com.example.eventmanagment.dto.event.CreateEventRequest;
 import com.example.eventmanagment.dto.event.EventDto;
 import com.example.eventmanagment.dto.event.UpdateEventRequest;
-import com.example.eventmanagment.helpers.FileHelper;
 import com.example.eventmanagment.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,6 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ADMIN')")
 public class EventController {
     private final EventService eventService;
-    private final FileHelper fileHelper;
 
     // GET all events
     @GetMapping
@@ -39,43 +38,25 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
-    // POST create event
-    @PostMapping
-    public ResponseEntity<EventDto> createEvent(@RequestBody @Valid CreateEventRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<EventDto> createEvent(@RequestPart("data") @Valid CreateEventRequest request,
+                                                @RequestPart(value = "image", required = false) MultipartFile imageFile){
 
-//        try {
-//            if (!file.isEmpty()) {
-//                String fileName = fileHelper.uploadFile(
-//                        "target/classes/static/assets/files/images",
-//                        file.getOriginalFilename(),
-//                        file.getBytes()
-//                );
-//                request.setImageUrl("/assets/files/images/" + fileName);
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException("File upload failed: " + e.getMessage());
-//        }
-        EventDto created = eventService.create(request);
+
+
+        EventDto created = eventService.create(request, imageFile);
         return ResponseEntity.ok(created);
     }
 
     // PUT update event
     @PutMapping("/{id}")
-    public ResponseEntity<EventDto> updateEvent(@PathVariable Long id,
-                                                @RequestBody @Valid UpdateEventRequest request) {
-//        try {
-//            if (!file.isEmpty()) {
-//                String fileName = fileHelper.uploadFile(
-//                        "target/classes/static/assets/files/images",
-//                        file.getOriginalFilename(),
-//                        file.getBytes()
-//                );
-//                request.setImageUrl("/assets/files/images/" + fileName);
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException("File upload failed: " + e.getMessage());
-//        }
-        EventDto updated = eventService.update(id, request);
+    public ResponseEntity<EventDto> updateEvent(
+            @PathVariable Long id,
+            @RequestPart("data") @Valid UpdateEventRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
+    ) {
+
+        EventDto updated = eventService.update(id, request,imageFile);
         return ResponseEntity.ok(updated);
     }
 

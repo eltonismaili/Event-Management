@@ -16,9 +16,15 @@ import com.example.eventmanagment.repository.VenueRepository;
 import com.example.eventmanagment.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,24 +53,25 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto create(CreateEventRequest request) {
+    public EventDto create(CreateEventRequest request, MultipartFile imageFile) {
         var event = eventMapper.toEntityCreate(request);
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException(request.getCategoryId()));
-
-//        Category category = event.getCategory();
-//        Category savedCategory = categoryRepository.save(category);
 
 
         Venue venue = venueRepository.findById(request.getVenueId())
                 .orElseThrow(() -> new VenueNotFoundException(request.getVenueId()));
 
-//        Venue venue = event.getVenue();
-//        Venue savedVenue = venueRepository.save(venue);
+        var fileName = "";
+        if (imageFile != null && !imageFile.isEmpty()) {
+            fileName = uploadFile(imageFile);
+        }
+
+        event.setImagePath(fileName);
+
 
         event.setCreatedBy(AuthenticationServiceImpl.getLoggedInUserEmail());
         event.setCreatedAt(LocalDateTime.now());
-//
 
 
         event.setCategory(category);
@@ -75,7 +82,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto update(Long id, UpdateEventRequest request) {
+    public EventDto update(Long id, UpdateEventRequest request, MultipartFile imageFile) {
         Event existing = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
 
@@ -93,7 +100,24 @@ public class EventServiceImpl implements EventService {
 
         System.out.println("updated req" + existing.getUpdatedBy());
         Event updated = eventRepository.save(existing);
+
+        var fileName = "";
+
+        if (imageFile != null && !imageFile.isEmpty()) fileName = uploadFile(imageFile);
         return eventMapper.toDto(updated);
+    }
+
+    public String uploadFile(MultipartFile imageFile) {
+        String filename = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+        Path uploadDir = Paths.get("uploads");
+        try {
+            Files.createDirectories(uploadDir); // Create uploads/ if it doesn't exist
+            Path imagePath = uploadDir.resolve(filename);
+            Files.write(imagePath, imageFile.getBytes());
+            return "uploads/" + filename;  // Return the path to the image file
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store image file", e);
+        }
     }
 
     @Override
