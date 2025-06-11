@@ -23,6 +23,7 @@ public interface EventMapper {
 
     Event toEntityCreate(CreateEventRequest request);
 
+    @Mapping(target = "id", ignore = true) // Ignore ID for update operations
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "venue", ignore = true)
     void updateEntityFromDto(UpdateEventRequest dto, @MappingTarget Event event);

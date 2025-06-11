@@ -48,12 +48,31 @@ public class TicketServiceImpl implements TicketService {
         User user = userRepository.findById(ticketDto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId()));
 
+        // Get total tickets sold for this event
+        int totalSold = ticketRepository.totalTicketsSoldForEvent(event.getId());
+
+        // Get total tickets bought by this user for this event
+        int userTickets = ticketRepository.totalTicketsByUserForEvent(event.getId(), user.getId());
+
+        int requestedQuantity = ticketDto.getQuantity();
+
+        // Check if event venue capacity exceeded
+        if (totalSold + requestedQuantity > event.getVenue().getCapacity()) {
+            throw new IllegalStateException("Tickets sold out: Venue capacity reached.");
+        }
+
+        // Check if user is buying more than 3 tickets in total
+        if (userTickets + requestedQuantity > 3) {
+            throw new IllegalStateException("Cannot buy more than 3 tickets per user for this event.");
+        }
+
         ticket.setEvent(event);
         ticket.setUser(user);
 
         Ticket savedTicket = ticketRepository.save(ticket);
         return ticketMapper.toDto(savedTicket);
     }
+
 
     @Override
     public TicketDto update(Long id, TicketDto ticketDto) {

@@ -42,6 +42,8 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false)
     private EventType eventType;
+    @Column(nullable = false)
+    private double ticketPrice;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "created_by")

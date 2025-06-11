@@ -42,6 +42,8 @@ public class EventDto {
 
     @NotNull
     private Long venueId;
+    @NotNull
+    private double ticketPrice;
 
     @Size(min = 2, max = 50,message = "Created by must be between 2 and 50 characters")
     @NotNull

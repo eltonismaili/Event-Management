@@ -28,8 +28,7 @@ public class TicketDto {
     @NotNull
     private String name;
 
-    @NotNull
-    private double price;
+
 
     @NotNull
     private LocalDateTime startDate;

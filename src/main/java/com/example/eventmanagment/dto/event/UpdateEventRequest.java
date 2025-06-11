@@ -43,6 +43,8 @@ public class UpdateEventRequest {
 
     @NotNull(message = "Venue is required")
     private Long venue;
+    @NotNull
+    private double ticketPrice;
 
     private String updatedBy;
 

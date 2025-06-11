@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         Address address = user.getAddress();
         Address savedAddress = addressRepository.save(address);
 
-        user.setRoles(Role.USER); // Default role for new users
+//        user.setRoles(Role.USER);
 
         user.setAddress(savedAddress);
 
