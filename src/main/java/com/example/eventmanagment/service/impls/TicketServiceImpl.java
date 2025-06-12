@@ -9,6 +9,7 @@ import com.example.eventmanagment.exceptions.ticket.TicketNotFoundException;
 import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.TicketMapper;
 import com.example.eventmanagment.repository.EventRepository;
+import com.example.eventmanagment.repository.RegistrationRepository;
 import com.example.eventmanagment.repository.TicketRepository;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.service.TicketService;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class TicketServiceImpl implements TicketService {
     private final TicketMapper ticketMapper;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final RegistrationRepository registrationRepository;
 
     @Override
     public List<TicketDto> findAll() {
@@ -69,7 +72,9 @@ public class TicketServiceImpl implements TicketService {
         ticket.setEvent(event);
         ticket.setUser(user);
 
+
         Ticket savedTicket = ticketRepository.save(ticket);
+//        registrationRepository.save(savedTicket);
         return ticketMapper.toDto(savedTicket);
     }
 
@@ -105,5 +110,13 @@ public class TicketServiceImpl implements TicketService {
             throw new TicketNotFoundException(id);
         }
         ticketRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TicketDto> findAllByUserId(Long userId) {
+        List<Ticket> tickets = ticketRepository.findAllByUserId(userId);
+        return tickets.stream()
+                .map(ticketMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

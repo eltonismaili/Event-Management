@@ -62,5 +62,10 @@ public class TicketController {
         return ResponseEntity.ok(stats);
     }
 
+    @GetMapping("/user/{userId}")
+    public List<TicketDto> getTicketsByUserId(@PathVariable Long userId) {
+        return ticketService.findAllByUserId(userId);
+    }
+
 
 }

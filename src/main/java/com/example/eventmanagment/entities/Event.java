@@ -34,7 +34,7 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime startDate;
 
-    @Column(name = "image_path" , length = 255)
+    @Column(name = "image_path" , length = 255, nullable = true)
     private String imagePath;
     @Column( nullable = false)
     private LocalDateTime endDate;

@@ -15,6 +15,8 @@ import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.repository.VenueRepository;
 import com.example.eventmanagment.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,8 +85,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto update(Long id, UpdateEventRequest request, MultipartFile imageFile) {
+
         Event existing = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
+
+        var fileName = "";
+
+        if (imageFile != null && !imageFile.isEmpty()) fileName = uploadFile(imageFile);
 
         eventMapper.updateEntityFromDto(request, existing);
 
@@ -98,12 +105,16 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new VenueNotFoundException(request.getVenue()));
         existing.setVenue(venue);
 
+        if (fileName.isBlank()) {
+            existing.setImagePath(existing.getImagePath()); // KEEP existing
+        } else {
+            existing.setImagePath(fileName); // SET new
+        }
+
         System.out.println("updated req" + existing.getUpdatedBy());
         Event updated = eventRepository.save(existing);
 
-        var fileName = "";
 
-        if (imageFile != null && !imageFile.isEmpty()) fileName = uploadFile(imageFile);
         return eventMapper.toDto(updated);
     }
 
@@ -126,5 +137,20 @@ public class EventServiceImpl implements EventService {
             throw new RuntimeException("Event not found with id: " + id);
         }
         eventRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteExpiredEvents() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Event> expiredEvents = eventRepository.findByEndDateBefore(now);
+
+        if (!expiredEvents.isEmpty()) {
+            eventRepository.deleteAll(expiredEvents);
+            System.out.println("Deleted " + expiredEvents.size() + " expired events at " + now);
+        }
+    }
+    @Scheduled(fixedRate = 3600000)
+    public void scheduledExpiredEventCleanup() {
+        deleteExpiredEvents();
     }
 }

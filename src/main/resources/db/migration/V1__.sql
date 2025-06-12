@@ -23,7 +23,7 @@ CREATE TABLE events
     category_id  BIGINT                                  NOT NULL,
     venue_id     BIGINT                                  NOT NULL,
     start_date   TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
-    image_path   VARCHAR(255)                            NOT NULL,
+    image_path   VARCHAR(255),
     end_date     TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     event_type   VARCHAR(255)                            NOT NULL,
     ticket_price DOUBLE PRECISION                        NOT NULL,
@@ -112,7 +112,7 @@ ALTER TABLE reviews
     ADD CONSTRAINT FK_REVIEWS_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);
 
 ALTER TABLE tickets
-    ADD CONSTRAINT FK_TICKETS_ON_EVENT FOREIGN KEY (event_id) REFERENCES events (id);
+    ADD CONSTRAINT FK_TICKETS_ON_EVENT FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE;
 
 ALTER TABLE tickets
     ADD CONSTRAINT FK_TICKETS_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);

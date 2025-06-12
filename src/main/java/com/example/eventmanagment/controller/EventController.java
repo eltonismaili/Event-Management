@@ -71,4 +71,11 @@ public class EventController {
     public CreateEventRequest getDefaultEvent() {
         return new CreateEventRequest();
     }
+
+    // Endpoint to delete expired events only in postman
+    @DeleteMapping("/cleanup")
+    public ResponseEntity<String> deleteExpiredEvents() {
+        eventService.deleteExpiredEvents();
+        return ResponseEntity.ok("Expired events deleted.");
+    }
 }

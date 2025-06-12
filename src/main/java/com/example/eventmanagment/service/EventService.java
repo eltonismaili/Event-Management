@@ -18,4 +18,6 @@ public interface EventService {
     EventDto update(Long id, UpdateEventRequest eventDto, MultipartFile imageFile);
 
     void delete(Long id);
+
+    void deleteExpiredEvents();
 }
