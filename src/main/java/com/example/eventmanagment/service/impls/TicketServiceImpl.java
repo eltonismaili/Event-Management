@@ -13,6 +13,8 @@ import com.example.eventmanagment.repository.TicketRepository;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.service.TicketService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,9 @@ public class TicketServiceImpl implements TicketService {
     private final TicketMapper ticketMapper;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
+//    mail sender
+
 
     @Override
     public List<TicketDto> findAll() {
@@ -49,21 +54,18 @@ public class TicketServiceImpl implements TicketService {
         User user = userRepository.findById(ticketDto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(ticketDto.getUserId()));
 
-        // Get total tickets sold for this event
         int totalSold = ticketRepository.totalTicketsSoldForEvent(event.getId());
 
-        // Get total tickets bought by this user for this event
         int userTickets = ticketRepository.totalTicketsByUserForEvent(event.getId(), user.getId());
 
         int requestedQuantity = ticketDto.getQuantity();
 
-        // Check if event venue capacity exceeded
         if (totalSold + requestedQuantity > event.getVenue().getCapacity()) {
             throw new IllegalStateException("Tickets sold out: Venue capacity reached.");
         }
 
-        // Check if user is buying more than 3 tickets in total
-        if (userTickets + requestedQuantity > 3) {
+
+        if (userTickets + requestedQuantity >= 3) {
             throw new IllegalStateException("Cannot buy more than 3 tickets per user for this event.");
         }
 
@@ -72,7 +74,15 @@ public class TicketServiceImpl implements TicketService {
 
 
         Ticket savedTicket = ticketRepository.save(ticket);
-//        registrationRepository.save(savedTicket);
+        String subject = "Ticket Confirmation for " + event.getName();
+        String message = "Dear " + user.getName() + ",\n\n" +
+                "Thank you for purchasing " + requestedQuantity + " ticket(s) for the event '" + event.getName() + "'.\n" +
+                "Event Date: " + event.getStartDate() + "\n" +
+                "Venue: " + event.getVenue().getName() + "\n\n" +
+                "Enjoy the event!\n\nBest regards,\nEvent Management Team";
+
+        emailService.sendTicketConfirmation(user.getEmail(), subject, message);
+
         return ticketMapper.toDto(savedTicket);
     }
 
