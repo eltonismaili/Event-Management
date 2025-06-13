@@ -18,10 +18,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        // hapi 1: Authenticate user
+
         var user = service.authenticate(request.getEmail(), request.getPassword());
 
-        // hapi 2: Generate token
+
         var token = service.generateToken(user);
 
         var authResponse = new AuthResponse(token, 86400000L); // 24h in milliseconds

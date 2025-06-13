@@ -7,29 +7,36 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAnyRole;
+
 @RestController
 @RequestMapping("/api/v1/tickets")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
 public class TicketController {
     private final TicketService ticketService;
     private final   TicketRepository ticketRepository;
 
+    @PreAuthorize("hasAnyAuthority('admin:read','user:read')")
     @GetMapping
     public ResponseEntity<List<TicketDto>> getAllTickets() {
         return ResponseEntity.ok(ticketService.findAll());
     }
 
+    @PreAuthorize("hasAnyAuthority('admin:write','user:write')")
     @PostMapping
     public ResponseEntity<TicketDto> createTicket(@Valid @RequestBody TicketDto ticketDto) {
         return ResponseEntity.ok(ticketService.create(ticketDto));
     }
 
+    @PreAuthorize("hasAnyAuthority('admin:read','user:read')")
     @GetMapping("/{id}")
     public ResponseEntity<TicketDto> getTicketById(@PathVariable Long id) {
         return ResponseEntity.ok(ticketService.findById(id));

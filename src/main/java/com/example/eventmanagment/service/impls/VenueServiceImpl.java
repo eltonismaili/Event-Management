@@ -45,7 +45,6 @@ public class VenueServiceImpl implements VenueService {
 
         venue.setAddress(savedAddress);
 
-        // Save the venue
         var savedVenue = venueRepository.save(venue);
 
         return venueMapper.toDto(savedVenue);

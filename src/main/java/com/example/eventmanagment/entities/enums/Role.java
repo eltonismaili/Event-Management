@@ -13,8 +13,8 @@ import static com.example.eventmanagment.entities.enums.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
-    USER(Set.of(USER_READ)),
-    ADMIN(Set.of(ADMIN_READ, ADMIN_WRITE, USER_READ));
+    USER(Set.of(USER_READ, USER_WRITE)),
+    ADMIN(Set.of(ADMIN_READ, ADMIN_WRITE, USER_READ, USER_WRITE));
 
     @Getter
     private final Set<Permission> permissions;

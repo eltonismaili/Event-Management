@@ -140,17 +140,24 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void deleteExpiredEvents() {
+    public List<Event> getActiveEvents() {
         LocalDateTime now = LocalDateTime.now();
-        List<Event> expiredEvents = eventRepository.findByEndDateBefore(now);
+        return eventRepository.findActiveEvents(now);
+    }
 
-        if (!expiredEvents.isEmpty()) {
-            eventRepository.deleteAll(expiredEvents);
-            System.out.println("Deleted " + expiredEvents.size() + " expired events at " + now);
-        }
-    }
-    @Scheduled(fixedRate = 3600000)
-    public void scheduledExpiredEventCleanup() {
-        deleteExpiredEvents();
-    }
+
+//    @Override
+//    public void deleteExpiredEvents() {
+//        LocalDateTime now = LocalDateTime.now();
+//        List<Event> expiredEvents = eventRepository.findByEndDateBefore(now);
+//
+//        if (!expiredEvents.isEmpty()) {
+//            eventRepository.deleteAll(expiredEvents);
+//            System.out.println("Deleted " + expiredEvents.size() + " expired events at " + now);
+//        }
+//    }
+//    @Scheduled(fixedRate = 3600000)
+//    public void scheduledExpiredEventCleanup() {
+//        deleteExpiredEvents();
+//    }
 }

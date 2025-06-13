@@ -2,6 +2,7 @@ package com.example.eventmanagment.entities;
 
 import com.example.eventmanagment.entities.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -19,23 +20,36 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Name is required.")
+    @Size(max = 100, message = "Name must be less than 100 characters.")
     @Column(name = "name", nullable = false)
-    @NotNull
     private String name;
+
+    @NotBlank(message = "Surname is required.")
+    @Size(max = 100, message = "Surname must be less than 100 characters.")
     @Column(name = "surname", nullable = false)
-    @NotNull
     private String surname;
+
+    @NotBlank(message = "Email is required.")
+    @Email(message = "Email must be a valid format.")
+    @Size(max = 150, message = "Email must be less than 150 characters.")
     @Column(name = "email", nullable = false, unique = true)
-    @NotNull
     private String email;
+
+    @NotBlank(message = "Password is required.")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
     @Column(name = "password", nullable = false)
-    @NotNull
     private String password;
+
+    @Min(value = 13, message = "Age must be at least 13.")
+    @Max(value = 120, message = "Age must be realistic.")
     @Column(name = "age", nullable = false)
-    @NotNull
     private int age;
+
     @Enumerated(EnumType.STRING)
     private Role roles;
+
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;

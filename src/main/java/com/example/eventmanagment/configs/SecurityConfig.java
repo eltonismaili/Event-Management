@@ -22,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.example.eventmanagment.entities.enums.Permission.ADMIN_READ;
+import static com.example.eventmanagment.entities.enums.Permission.*;
 
 @Configuration
 @EnableWebSecurity
@@ -58,35 +58,22 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/addresses").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/addresses/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/addresses/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/roles/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/roles").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/roles/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyAuthority(ADMIN_READ.getPermission())
-                        .requestMatchers(HttpMethod.POST, "/api/v1/events").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/events").hasAnyAuthority(ADMIN_WRITE.getPermission())
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
                         .requestMatchers(HttpMethod.GET, "/api/v1/venues/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/venues").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/venues/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/venues/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/venues").hasAnyAuthority(ADMIN_WRITE.getPermission())
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/venues/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/venues/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/categories").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categories").hasAnyAuthority(ADMIN_WRITE.getPermission())
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
                         .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/tickets").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/tickets/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/tickets/**").hasAnyAuthority(ADMIN_WRITE.getPermission())
                         .requestMatchers(HttpMethod.PUT, "/api/v1/tickets/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/registrations/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/registrations").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/registrations/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/registrations/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/reviews/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/reviews").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/reviews/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/reviews/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -113,7 +100,7 @@ public class SecurityConfig {
                             .country("USA")
                             .build();
 
-                    // Save the address to generate its ID
+
                     Address savedAddress = addressRepository.save(address);
 
                     var newUser = User.builder()
@@ -123,7 +110,7 @@ public class SecurityConfig {
                             .password(passwordEncoder().encode("password"))
                             .age(20)
                             .roles(Role.ADMIN)
-                            .address(savedAddress)    // <-- Assign the saved address here
+                            .address(savedAddress)
                             .build();
 
                     return userRepository.save(newUser);

@@ -2,7 +2,6 @@ package com.example.eventmanagment.service.impls;
 
 import com.example.eventmanagment.dto.category.CategoryDto;
 import com.example.eventmanagment.exceptions.category.CategoryNotFoundException;
-import com.example.eventmanagment.exceptions.registration.RegistrationNotFoundException;
 import com.example.eventmanagment.mapper.CategoryMapper;
 import com.example.eventmanagment.repository.CategoryRepository;
 import com.example.eventmanagment.service.CategoryService;
@@ -40,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto update(Long id, CategoryDto categoryDto) {
         if (!id.equals(categoryDto.getId())) {
-            throw new RegistrationNotFoundException(id);
+            throw new CategoryNotFoundException(id);
         }
 
         var existingCategory = categoryRepository.findById(id)

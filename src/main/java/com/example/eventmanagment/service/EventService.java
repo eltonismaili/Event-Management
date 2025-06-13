@@ -3,6 +3,7 @@ package com.example.eventmanagment.service;
 import com.example.eventmanagment.dto.event.CreateEventRequest;
 import com.example.eventmanagment.dto.event.EventDto;
 import com.example.eventmanagment.dto.event.UpdateEventRequest;
+import com.example.eventmanagment.entities.Event;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,5 +20,9 @@ public interface EventService {
 
     void delete(Long id);
 
-    void deleteExpiredEvents();
+//    void deleteExpiredEvents();
+
+    List<Event> getActiveEvents();
+
+
 }

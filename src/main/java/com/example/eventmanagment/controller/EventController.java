@@ -4,6 +4,7 @@ package com.example.eventmanagment.controller;
 import com.example.eventmanagment.dto.event.CreateEventRequest;
 import com.example.eventmanagment.dto.event.EventDto;
 import com.example.eventmanagment.dto.event.UpdateEventRequest;
+import com.example.eventmanagment.entities.Event;
 import com.example.eventmanagment.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +20,20 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/events")
-@PreAuthorize("hasAnyRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
 public class EventController {
     private final EventService eventService;
 
     // GET all events
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('admin:read')")
+    @PreAuthorize("hasAnyAuthority('admin:read','user:read')")
     public ResponseEntity<List<EventDto>> getAllEvents() {
         List<EventDto> events = eventService.findAll();
         return ResponseEntity.ok(events);
     }
 
     // GET event by ID
+    @PreAuthorize("hasAnyAuthority('admin:read','user:read','user:write')")
     @GetMapping("/{id}")
     public ResponseEntity<EventDto> getEventById(@PathVariable Long id) {
         EventDto event = eventService.findById(id);
@@ -40,8 +42,7 @@ public class EventController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EventDto> createEvent(@RequestPart("data") @Valid CreateEventRequest request,
-                                                @RequestPart(value = "image", required = false) MultipartFile imageFile){
-
+                                                @RequestPart(value = "image", required = false) MultipartFile imageFile) {
 
 
         EventDto created = eventService.create(request, imageFile);
@@ -56,7 +57,7 @@ public class EventController {
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
 
-        EventDto updated = eventService.update(id, request,imageFile);
+        EventDto updated = eventService.update(id, request, imageFile);
         return ResponseEntity.ok(updated);
     }
 
@@ -73,9 +74,14 @@ public class EventController {
     }
 
     // Endpoint to delete expired events only in postman
-    @DeleteMapping("/cleanup")
-    public ResponseEntity<String> deleteExpiredEvents() {
-        eventService.deleteExpiredEvents();
-        return ResponseEntity.ok("Expired events deleted.");
+//    @DeleteMapping("/cleanup")
+//    public ResponseEntity<String> deleteExpiredEvents() {
+//        eventService.deleteExpiredEvents();
+//        return ResponseEntity.ok("Expired events deleted.");
+//    }
+
+    @GetMapping("/active")
+    public List<Event> getActiveEvents() {
+        return eventService.getActiveEvents();
     }
 }

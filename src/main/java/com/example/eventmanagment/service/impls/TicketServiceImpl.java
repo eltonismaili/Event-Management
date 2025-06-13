@@ -9,7 +9,6 @@ import com.example.eventmanagment.exceptions.ticket.TicketNotFoundException;
 import com.example.eventmanagment.exceptions.user.UserNotFoundException;
 import com.example.eventmanagment.mapper.TicketMapper;
 import com.example.eventmanagment.repository.EventRepository;
-import com.example.eventmanagment.repository.RegistrationRepository;
 import com.example.eventmanagment.repository.TicketRepository;
 import com.example.eventmanagment.repository.UserRepository;
 import com.example.eventmanagment.service.TicketService;
@@ -26,7 +25,6 @@ public class TicketServiceImpl implements TicketService {
     private final TicketMapper ticketMapper;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final RegistrationRepository registrationRepository;
 
     @Override
     public List<TicketDto> findAll() {
